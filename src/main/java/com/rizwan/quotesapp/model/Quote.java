@@ -30,31 +30,35 @@ public class Quote {
     return quoteText;
   }
 
-  public void setQuoteText(String quoteText) {
+  public Quote setQuoteText(String quoteText) {
     this.quoteText = quoteText;
+    return this;
   }
 
   public String getAuthor() {
     return author;
   }
 
-  public void setAuthor(String author) {
+  public Quote setAuthor(String author) {
     this.author = author;
+    return this;
   }
 
   public String getOrigin() {
     return origin;
   }
 
-  public void setOrigin(String origin) {
+  public Quote setOrigin(String origin) {
     this.origin = origin;
+    return this;
   }
 
   public CreationType getCreationType() {
     return creationType;
   }
 
-  public void setCreationType(CreationType creationType) {
+  public Quote setCreationType(CreationType creationType) {
     this.creationType = creationType;
+    return this;
   }
 }
