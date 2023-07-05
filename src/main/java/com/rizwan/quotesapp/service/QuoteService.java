@@ -41,7 +41,7 @@ public class QuoteService {
   public Map<String, String> validateQuote(QuoteJson quoteJson) {
     var errors = new HashMap<String, String>();
 
-    if (quoteJson.quoteText() == null || quoteJson.quoteText().isEmpty()) {
+    if (quoteJson.quoteText() == null || quoteJson.quoteText().isBlank()) {
       errors.put("quoteText", "Quote text must not be null");
     }
 
