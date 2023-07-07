@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.1.0'
-	id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.rizwan'
@@ -9,17 +9,49 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntime.extendsFrom testRuntime
+}
+
+sourceSets {
+	integrationTest {
+		java {
+			srcDir "src/integrationTest/java"
+			compileClasspath += main.output + test.output
+			runtimeClasspath += main.output + test.output
+		}
+		resources.srcDir "src/integrationTest/resources"
+	}
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+	implementation 'org.postgresql:postgresql:42.6.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'io.rest-assured:rest-assured:5.3.1'
+	integrationTestImplementation 'io.rest-assured:json-schema-validator:5.3.1'
+	integrationTestImplementation 'org.testcontainers:testcontainers:1.18.3'
+	integrationTestImplementation 'org.testcontainers:junit-jupiter:1.18.3'
+	integrationTestImplementation 'org.testcontainers:postgresql:1.18.3'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+	dependsOn testClasses
+    useJUnitPlatform()
+    classpath = sourceSets.integrationTest.runtimeClasspath
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
 }
