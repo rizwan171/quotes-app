@@ -9,16 +9,6 @@
 
 </div>
 
-<div align="center">
-
-spring boot
-vue
-typescript
-postgres
-docker
-
-</div>
-
 ---
 
 ## 📝 Table of Contents
