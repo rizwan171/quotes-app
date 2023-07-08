@@ -1,13 +1,12 @@
 package com.rizwan.quotesapp.model;
 
 import com.rizwan.quotesapp.model.enumeration.CreationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
+@Table(name = "quotes")
 public class Quote {
 
   @Id
@@ -20,6 +19,7 @@ public class Quote {
 
   private String origin;
 
+  @Enumerated(EnumType.STRING)
   private CreationType creationType;
 
   public UUID getId() {
@@ -30,31 +30,35 @@ public class Quote {
     return quoteText;
   }
 
-  public void setQuoteText(String quoteText) {
+  public Quote setQuoteText(String quoteText) {
     this.quoteText = quoteText;
+    return this;
   }
 
   public String getAuthor() {
     return author;
   }
 
-  public void setAuthor(String author) {
+  public Quote setAuthor(String author) {
     this.author = author;
+    return this;
   }
 
   public String getOrigin() {
     return origin;
   }
 
-  public void setOrigin(String origin) {
+  public Quote setOrigin(String origin) {
     this.origin = origin;
+    return this;
   }
 
   public CreationType getCreationType() {
     return creationType;
   }
 
-  public void setCreationType(CreationType creationType) {
+  public Quote setCreationType(CreationType creationType) {
     this.creationType = creationType;
+    return this;
   }
 }
