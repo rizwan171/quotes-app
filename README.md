@@ -15,7 +15,7 @@
 - [About](#about)
 - [Prerequisites](#prerequisites)
 - [Running the app](#running-the-app)
-- [Tests](#running-the-tests)
+- [Running the tests](#running-the-tests)
 - [Built Using](#built-using)
 
 ## About
