@@ -3,12 +3,12 @@ import type { GeneratedQuote } from "@/types/GeneratedQuote";
 import type { QuoteGenerationOptions } from "@/types/QuoteGenerationOptions";
 
 export const generateQuote = async (options?: QuoteGenerationOptions): Promise<GeneratedQuote | null> => {
-  let requestOptionsString = "/random";
+  let requestOptionsString = "";
   if (options && options.anime) {
     requestOptionsString += `/anime?title=${options.anime}`;
   }
 
-  const response = await fetch(ANIME_CHAN_API_URL + requestOptionsString, {
+  const response = await fetch(requestOptionsString, {
     method: "GET"
   });
 

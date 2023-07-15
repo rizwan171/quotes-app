@@ -27,7 +27,8 @@ export default {
 }
 
 .saved-quote {
-  background-color: #eee;
+  background-color: #bbbbbb;
+  opacity: 80%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 5px;
