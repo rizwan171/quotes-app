@@ -5,7 +5,6 @@
       <span class="generated-quote-text">{{ quote.quoteText }}</span>
       <span class="generated-quote-author" v-if="quote.author">- By {{ quote.author }}</span>
       <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
-      <!-- TODO maybe add save icon -->
     </div>
     <div class="generated-quote-actions">
       <button class="btn-generate-quote" @click="handleGenerate">Generate Quote</button>
