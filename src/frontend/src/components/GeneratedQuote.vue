@@ -44,7 +44,7 @@ export default defineComponent({
       loading.value = false;
     };
 
-    return { quote, handleGenerate, loading };
+    return { quote, loading, handleGenerate };
   }
 });
 </script>
