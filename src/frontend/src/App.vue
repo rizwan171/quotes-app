@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts" setup>
-import GeneratedQuote from './components/GeneratedQuote.vue';
-import SavedQuotes from './components/SavedQuotes.vue';
+import GeneratedQuote from "./components/GeneratedQuote.vue";
+import SavedQuotes from "./components/SavedQuotes.vue";
 </script>
 
 <style scoped>
 .app-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;

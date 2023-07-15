@@ -1,24 +1,35 @@
 <template>
   <div class="quote-container">
     <div class="quote-info">
-      <span class="quote-text"
-        >"I would rather be ashes than dust. I would rather that my spark should burn out in a
-        brilliant blaze than it should be stifled by dry-rot. I would rather be a superb meteor,
-        every atom of me in magnificent glow, than a sleepy and permanent planet. The function of
-        man is to live, not to exist. I shall not waste my days trying to prolong them. I shall use
-        my time"</span
-      >
-      <span class="quote-author">- By</span>
-      <span class="quote-origin">- From</span>
+      <span class="quote-text">{{ quote.quoteText }}</span>
+      <span class="quote-author" v-if="quote.author">- By {{ quote.author }}</span>
+      <span class="quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
     </div>
-    <button class="btn-generate-quote">Generate Quote</button>
+    <button class="btn-generate-quote" @click="handleGenerate">Generate Quote</button>
   </div>
 </template>
 
 <script lang="ts">
+import { generateQuote } from "@/services";
+import type { GeneratedQuote } from "@/types/GeneratedQuote";
+import { ref } from "vue";
+
 export default {
   setup() {
-    return {};
+    let quote = ref<GeneratedQuote>({
+      quoteText: "",
+      author: "",
+      origin: ""
+    });
+
+    const handleGenerate = async () => {
+      const generatedQuote = await generateQuote();
+      if (generatedQuote) {
+        quote.value = generatedQuote;
+      }
+    };
+
+    return { quote, handleGenerate };
   }
 };
 </script>

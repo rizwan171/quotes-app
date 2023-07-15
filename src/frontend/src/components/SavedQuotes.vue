@@ -1,12 +1,10 @@
 <template>
   <div class="saved-quotes-list">
     <div class="saved-quote">
-      "Nobody is trying to fix the root problems we have in this country. Everyone is trying to make
-      enough money so that the problems don't apply to them anymore" - Jack London
+      "Nobody is trying to fix the root problems we have in this country. Everyone is trying to make enough money so
+      that the problems don't apply to them anymore" - Jack London
     </div>
-    <div class="saved-quote">
-      "The secret to happiness is freedom, and the secret to freedom is courage" - Unknown
-    </div>
+    <div class="saved-quote">"The secret to happiness is freedom, and the secret to freedom is courage" - Unknown</div>
     <div class="saved-quote">
       "It may seem difficult at first, but everything seems difficult first" - Miyamoto Musashi
     </div>
