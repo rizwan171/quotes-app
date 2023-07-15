@@ -1,0 +1,10 @@
+button {
+  border-radius: 5px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    border: none;
+}
