@@ -6,9 +6,13 @@
       <span class="generated-quote-author" v-if="quote.author">- By {{ quote.author }}</span>
       <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
       <!-- TODO maybe add save icon -->
-      <button class="btn-save-generated-quote" v-if="quote.quoteText">Save quote</button>
     </div>
-    <button class="btn-generate-quote" @click="handleGenerate">Generate Quote</button>
+    <div class="generated-quote-actions">
+      <button class="btn-generate-quote" @click="handleGenerate">Generate Quote</button>
+      <button class="btn-save-generated-quote" v-if="quote.quoteText">
+        <font-awesome-icon icon="floppy-disk" size="lg" />
+      </button>
+    </div>
   </div>
 </template>
 
@@ -74,28 +78,29 @@ export default {
   font-size: 0.8rem;
 }
 
+.generated-quote-actions {
+  display: flex;
+  align-self: center;
+  column-gap: 0.5rem;
+  margin-top: 1rem;
+  max-height: fit-content;
+}
+
 button {
   cursor: pointer;
 }
 
-.btn-save-generated-quote {
-  max-width: fit-content;
-  margin-top: 1rem;
-  padding: 0.5rem;
-  padding-right: 1rem;
-  padding-left: 1rem;
-  align-self: center;
-  background-color: #4caf50;
-  color: white;
-}
-
 .btn-generate-quote {
   padding: 1rem;
-  padding-right: 2rem;
-  padding-left: 2rem;
-  margin-top: 1rem;
   color: white;
   font-weight: 900;
   background-color: #106bc0;
+}
+
+.btn-save-generated-quote {
+  padding: 1rem;
+  color: white;
+  font-weight: 900;
+  background-color: #2ca930;
 }
 </style>
