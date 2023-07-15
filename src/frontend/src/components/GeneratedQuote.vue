@@ -1,6 +1,7 @@
 <template>
   <div class="generate-quote-container">
     <div class="generated-quote-info">
+      <span class="no-generated-quote" v-if="!quote.quoteText">Click the button below to get a quote...</span>
       <span class="generated-quote-text">{{ quote.quoteText }}</span>
       <span class="generated-quote-author" v-if="quote.author">- By {{ quote.author }}</span>
       <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
@@ -19,9 +20,9 @@ import { ref } from "vue";
 export default {
   setup() {
     let quote = ref<GeneratedQuote>({
-      quoteText: "a",
-      author: "a",
-      origin: "a"
+      quoteText: "Sanity is a madness put to good use.",
+      author: "George Santayana",
+      origin: "QuotationsPage.com"
     });
 
     const handleGenerate = async () => {
@@ -53,17 +54,24 @@ export default {
   border-radius: 5px;
 }
 
+.no-generated-quote {
+  font-style: italic;
+}
+
 .generated-quote-text {
   font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .generated-quote-author {
   margin-top: 0.5rem;
   font-style: italic;
+  font-size: 0.8rem;
 }
 
 .generated-quote-origin {
   font-style: italic;
+  font-size: 0.8rem;
 }
 
 button {
