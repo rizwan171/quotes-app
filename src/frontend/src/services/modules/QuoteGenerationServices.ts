@@ -8,7 +8,7 @@ export const generateQuote = async (options?: QuoteGenerationOptions): Promise<G
     requestOptionsString += `/anime?title=${options.anime}`;
   }
 
-  const response = await fetch(requestOptionsString, {
+  const response = await fetch(ANIME_CHAN_API_URL + requestOptionsString, {
     method: "GET"
   });
 

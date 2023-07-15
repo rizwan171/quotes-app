@@ -7,7 +7,10 @@
       <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
     </div>
     <div class="generated-quote-actions">
-      <button class="btn-generate-quote" @click="handleGenerate">Generate Quote</button>
+      <button class="btn-generate-quote" @click="handleGenerate">
+        <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="loading" />
+        <span>Generate Quote</span>
+      </button>
       <button class="btn-save-generated-quote" v-if="quote.quoteText">
         <font-awesome-icon icon="floppy-disk" size="lg" />
       </button>
@@ -18,26 +21,32 @@
 <script lang="ts">
 import { generateQuote } from "@/services";
 import type { GeneratedQuote } from "@/types/GeneratedQuote";
-import { ref } from "vue";
+import { defineComponent, ref } from "vue";
 
-export default {
+export default defineComponent({
   setup() {
     let quote = ref<GeneratedQuote>({
-      quoteText: "Sanity is a madness put to good use.",
-      author: "George Santayana",
-      origin: "QuotationsPage.com"
+      quoteText: "Kinder beeno and flelo losh.",
+      author: "Qas Khan",
+      origin: "Chaiwali in Bladford"
     });
 
+    let loading = ref(false);
+
     const handleGenerate = async () => {
+      loading.value = true;
+
       const generatedQuote = await generateQuote();
       if (generatedQuote) {
         quote.value = generatedQuote;
       }
+
+      loading.value = false;
     };
 
-    return { quote, handleGenerate };
+    return { quote, handleGenerate, loading };
   }
-};
+});
 </script>
 
 <style scoped>
@@ -94,6 +103,10 @@ button {
   color: white;
   font-weight: 900;
   background-color: #106bc0;
+}
+
+.spinner-icon {
+  margin-right: 0.25rem;
 }
 
 .btn-save-generated-quote {
