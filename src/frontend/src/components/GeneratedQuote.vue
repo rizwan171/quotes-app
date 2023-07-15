@@ -1,36 +1,62 @@
 <template>
-  <div class="quote-container">
-    <div class="quote-info">
-      <span class="quote-text"
-        >"I would rather be ashes than dust. I would rather that my spark should burn out in a
-        brilliant blaze than it should be stifled by dry-rot. I would rather be a superb meteor,
-        every atom of me in magnificent glow, than a sleepy and permanent planet. The function of
-        man is to live, not to exist. I shall not waste my days trying to prolong them. I shall use
-        my time"</span
-      >
-      <span class="quote-author">- By</span>
-      <span class="quote-origin">- From</span>
+  <div class="generate-quote-container">
+    <div class="generated-quote-info">
+      <span class="no-generated-quote" v-if="!quote.quoteText">Click the button below to get a quote...</span>
+      <span class="generated-quote-text">{{ quote.quoteText }}</span>
+      <span class="generated-quote-author" v-if="quote.author">- By {{ quote.author }}</span>
+      <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
     </div>
-    <button class="btn-generate-quote">Generate Quote</button>
+    <div class="generated-quote-actions">
+      <button class="btn-generate-quote" @click="handleGenerate">
+        <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="loading" />
+        <span>Generate Quote</span>
+      </button>
+      <button class="btn-save-generated-quote" v-if="quote.quoteText">
+        <font-awesome-icon icon="floppy-disk" size="lg" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-export default {
+import { generateQuote } from "@/services";
+import type { GeneratedQuote } from "@/types/GeneratedQuote";
+import { defineComponent, ref } from "vue";
+
+export default defineComponent({
   setup() {
-    return {};
+    let quote = ref<GeneratedQuote>({
+      quoteText: "Kinder beeno and flelo losh.",
+      author: "Qas Khan",
+      origin: "Chaiwali in Bladford"
+    });
+
+    let loading = ref(false);
+
+    const handleGenerate = async () => {
+      loading.value = true;
+
+      const generatedQuote = await generateQuote();
+      if (generatedQuote) {
+        quote.value = generatedQuote;
+      }
+
+      loading.value = false;
+    };
+
+    return { quote, loading, handleGenerate };
   }
-};
+});
 </script>
 
 <style scoped>
-.quote-container {
+.generate-quote-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.quote-info {
+.generated-quote-info {
   display: flex;
   flex-direction: column;
   background-color: black;
@@ -40,25 +66,53 @@ export default {
   border-radius: 5px;
 }
 
-.quote-text {
+.no-generated-quote {
+  font-style: italic;
+}
+
+.generated-quote-text {
   font-weight: bold;
+  font-size: 1.2rem;
 }
 
-.quote-author {
+.generated-quote-author {
   margin-top: 0.5rem;
-  margin-left: 1rem;
   font-style: italic;
+  font-size: 0.8rem;
 }
 
-.quote-origin {
-  margin-left: 1rem;
+.generated-quote-origin {
   font-style: italic;
+  font-size: 0.8rem;
+}
+
+.generated-quote-actions {
+  display: flex;
+  align-self: center;
+  column-gap: 0.5rem;
+  margin-top: 1rem;
+  max-height: fit-content;
+}
+
+button {
+  cursor: pointer;
 }
 
 .btn-generate-quote {
-  padding: 0.5rem;
-  padding-right: 2rem;
-  padding-left: 2rem;
-  margin-top: 1rem;
+  padding: 1rem;
+  color: white;
+  font-weight: 900;
+  background-color: #106bc0;
+}
+
+.spinner-icon {
+  margin-right: 0.25rem;
+}
+
+.btn-save-generated-quote {
+  padding: 1rem;
+  color: white;
+  font-weight: 900;
+  background-color: #2ca930;
 }
 </style>
