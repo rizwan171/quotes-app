@@ -38,22 +38,15 @@ A single page quote generator app. Uses the [Animechan API](https://animechan.xy
 - Run `npm run dev` to start the frontend. 
   - This will typically start on `http://localhost:5173`, but may change depending on your Node configuration. The address should be displayed in your terminal after running the above.
 
-## Accessing the database via pgAdmin
-- The docker compose file starts up a pgAdmin container alongside the postgres database.
-- This can be accessed on `localhost:5050`, with email `dev@dev.co.uk` and password `dev`
-- To set up the database within pgAdmin:
-    - Run `docker compose up --detach` in terminal from the root of this project
-    - Login and choose `Object -> Register -> Server...`
-    - In the General tab:
-        - Name: set to anything you wish i.e. Quotes App DB
-    - In the Connection tab:
-        - Host: quotes-app-db
-        - Port: 5432
-        - Username: dev
-        - Password: dev
-        - Toggle Save Password
-        - Press Save
-- The database should be viewable in the left-hand side browser under Servers
+## Accessing the database via mongo express
+- The docker compose file starts up a mongo express container alongside the database.
+- This can be accessed on `localhost:8888`, with username `dev` and password `dev`.
+- When you first start up the app, the `quotesdb` database will not be present. It will be created once a quote has been saved or created via a POST request.
+
+### Tearing down the database
+- To reset the database, using mongo express, view the `quotesdb` database and select the `quotes` collection.
+  - NOTE: the `quotesdb` and `quotes` collection will only be present if you've saved some quotes
+- Delete all the documents in the `quotes` collection to reset the state.
 
 ## Running the tests
 This project features 2 types of tests: unit and integration tests.<br>
@@ -73,5 +66,5 @@ Java integration tests are located under `src/integrationTest/java`. To run, eit
 - [Spring Boot](https://spring.io/projects/spring-boot) - Backend
 - [Vue.js](https://vuejs.org/) - Frontend Framework
 - [Typescript](https://www.typescriptlang.org/) - syntactic superset of JavaScript for typing
-- [PostgreSQL](https://www.postgresql.org/) - Database
+- [MongoDB](https://www.mongodb.com/) - Database
 - [Docker](https://www.docker.com/) - Containerisation

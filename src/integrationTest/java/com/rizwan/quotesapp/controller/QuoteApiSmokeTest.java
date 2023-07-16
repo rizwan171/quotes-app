@@ -13,10 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +26,6 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("integrationTest")
 @Testcontainers
 class QuoteApiSmokeTest {
 
@@ -32,10 +33,12 @@ class QuoteApiSmokeTest {
   private int port;
 
   @Container
-  private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15")
-    .withUsername("dev")
-    .withPassword("dev")
-    .withDatabaseName("qadb");
+  private static final MongoDBContainer mongoDbContainer = new MongoDBContainer(DockerImageName.parse("mongo:7.0.0-rc7"));
+
+  @DynamicPropertySource
+  static void mongoDbProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.data.mongodb.uri", mongoDbContainer::getReplicaSetUrl);
+  }
 
   private static final String API_URL = "/api/v1/quotes";
 
@@ -47,7 +50,7 @@ class QuoteApiSmokeTest {
 
   @BeforeAll
   static void init() {
-    postgreSQLContainer.start();
+    mongoDbContainer.start();
   }
 
   @BeforeEach
@@ -60,7 +63,7 @@ class QuoteApiSmokeTest {
 
   @AfterAll
   static void teardown() {
-    postgreSQLContainer.stop();
+    mongoDbContainer.stop();
   }
 
   @Test

@@ -1,16 +1,15 @@
 package com.rizwan.quotesapp.model;
 
 import com.rizwan.quotesapp.model.enumeration.CreationType;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "quotes")
+@Document(collection = "quotes")
 public class Quote {
 
   @Id
-  @GeneratedValue(generator = "UUID")
   private UUID id;
 
   private String quoteText;
@@ -19,11 +18,15 @@ public class Quote {
 
   private String origin;
 
-  @Enumerated(EnumType.STRING)
   private CreationType creationType;
 
   public UUID getId() {
     return id;
+  }
+
+  public Quote setId(UUID id) {
+    this.id = id;
+    return this;
   }
 
   public String getQuoteText() {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class QuoteService {
@@ -30,6 +31,7 @@ public class QuoteService {
 
   public Quote saveQuote(QuoteJson quoteJson) {
     var quote = new Quote()
+      .setId(UUID.randomUUID())
       .setQuoteText(quoteJson.quoteText())
       .setAuthor(quoteJson.author())
       .setOrigin(quoteJson.origin())

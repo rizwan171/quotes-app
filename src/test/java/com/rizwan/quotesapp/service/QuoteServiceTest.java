@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,11 +35,13 @@ class QuoteServiceTest {
   @Test
   void getAllQuotesJson() {
     var quote1 = new Quote()
+      .setId(UUID.randomUUID())
       .setQuoteText("Quote Text 1")
       .setAuthor("Author 1")
       .setOrigin("Origin 1")
       .setCreationType(CreationType.MANUAL);
     var quote2 = new Quote()
+      .setId(UUID.randomUUID())
       .setQuoteText("Quote Text 2")
       .setAuthor("Author 2")
       .setOrigin("Origin 2")
@@ -53,6 +56,7 @@ class QuoteServiceTest {
   @Test
   void saveQuote() {
     var quote = new Quote()
+      .setId(UUID.randomUUID())
       .setQuoteText("Quote Text 1")
       .setAuthor("Author 1")
       .setOrigin("Origin 1")
@@ -62,7 +66,10 @@ class QuoteServiceTest {
     when(quoteRepository.save(any(Quote.class))).thenReturn(quote);
     assertThat(quoteService.saveQuote(quoteJson)).isEqualTo(quote);
     verify(quoteRepository).save(argumentCaptor.capture());
-    assertThat(argumentCaptor.getValue()).usingRecursiveComparison().isEqualTo(quote);
+    assertThat(argumentCaptor.getValue())
+      .usingRecursiveComparison()
+      .ignoringFields("id")
+      .isEqualTo(quote);
   }
 
   @Test
