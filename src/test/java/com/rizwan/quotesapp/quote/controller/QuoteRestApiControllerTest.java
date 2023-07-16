@@ -1,9 +1,10 @@
-package com.rizwan.quotesapp.controller;
+package com.rizwan.quotesapp.quote.controller;
 
-import com.rizwan.quotesapp.model.Quote;
-import com.rizwan.quotesapp.model.enumeration.CreationType;
-import com.rizwan.quotesapp.model.json.QuoteJson;
-import com.rizwan.quotesapp.service.QuoteService;
+import com.rizwan.quotesapp.quote.controller.QuoteRestApiController;
+import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
+import com.rizwan.quotesapp.quote.model.json.QuoteJson;
+import com.rizwan.quotesapp.quote.service.QuoteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

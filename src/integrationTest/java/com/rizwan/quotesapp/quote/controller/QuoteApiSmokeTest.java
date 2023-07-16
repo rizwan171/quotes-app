@@ -1,9 +1,9 @@
-package com.rizwan.quotesapp.controller;
+package com.rizwan.quotesapp.quote.controller;
 
-import com.rizwan.quotesapp.model.enumeration.CreationType;
-import com.rizwan.quotesapp.model.json.QuoteJson;
-import com.rizwan.quotesapp.repository.QuoteRepository;
-import com.rizwan.quotesapp.service.QuoteService;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
+import com.rizwan.quotesapp.quote.model.json.QuoteJson;
+import com.rizwan.quotesapp.quote.repository.QuoteRepository;
+import com.rizwan.quotesapp.quote.service.QuoteService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterAll;

@@ -1,9 +1,10 @@
-package com.rizwan.quotesapp.service;
+package com.rizwan.quotesapp.quote.service;
 
-import com.rizwan.quotesapp.model.Quote;
-import com.rizwan.quotesapp.model.enumeration.CreationType;
-import com.rizwan.quotesapp.model.json.QuoteJson;
-import com.rizwan.quotesapp.repository.QuoteRepository;
+import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
+import com.rizwan.quotesapp.quote.model.json.QuoteJson;
+import com.rizwan.quotesapp.quote.repository.QuoteRepository;
+import com.rizwan.quotesapp.quote.service.QuoteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
