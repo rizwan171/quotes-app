@@ -1,4 +1,4 @@
-package com.rizwan.quotesapp.views;
+package com.rizwan.quotesapp.quote.views;
 
 public class Views {
   public static class Get {

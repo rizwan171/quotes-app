@@ -1,8 +1,8 @@
-package com.rizwan.quotesapp.service;
+package com.rizwan.quotesapp.quote.service;
 
-import com.rizwan.quotesapp.model.Quote;
-import com.rizwan.quotesapp.model.json.QuoteJson;
-import com.rizwan.quotesapp.repository.QuoteRepository;
+import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.json.QuoteJson;
+import com.rizwan.quotesapp.quote.repository.QuoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;

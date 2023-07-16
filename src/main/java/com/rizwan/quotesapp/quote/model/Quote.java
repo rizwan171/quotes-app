@@ -1,6 +1,6 @@
-package com.rizwan.quotesapp.model;
+package com.rizwan.quotesapp.quote.model;
 
-import com.rizwan.quotesapp.model.enumeration.CreationType;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

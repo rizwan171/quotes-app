@@ -1,9 +1,9 @@
-package com.rizwan.quotesapp.controller;
+package com.rizwan.quotesapp.quote.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.rizwan.quotesapp.model.json.QuoteJson;
-import com.rizwan.quotesapp.service.QuoteService;
-import com.rizwan.quotesapp.views.Views;
+import com.rizwan.quotesapp.quote.model.json.QuoteJson;
+import com.rizwan.quotesapp.quote.service.QuoteService;
+import com.rizwan.quotesapp.quote.views.Views;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

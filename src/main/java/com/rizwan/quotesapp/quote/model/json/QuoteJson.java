@@ -1,9 +1,9 @@
-package com.rizwan.quotesapp.model.json;
+package com.rizwan.quotesapp.quote.model.json;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.rizwan.quotesapp.model.Quote;
-import com.rizwan.quotesapp.model.enumeration.CreationType;
-import com.rizwan.quotesapp.views.Views;
+import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
+import com.rizwan.quotesapp.quote.views.Views;
 
 import java.util.UUID;
 
