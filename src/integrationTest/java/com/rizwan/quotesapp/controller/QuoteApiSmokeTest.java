@@ -13,9 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +33,12 @@ class QuoteApiSmokeTest {
   private int port;
 
   @Container
-  private static final MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:7.0.0-rc7");
+  private static final MongoDBContainer mongoDbContainer = new MongoDBContainer(DockerImageName.parse("mongo:7.0.0-rc7"));
+
+  @DynamicPropertySource
+  static void mongoDbProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.data.mongodb.uri", mongoDbContainer::getReplicaSetUrl);
+  }
 
   private static final String API_URL = "/api/v1/quotes";
 
