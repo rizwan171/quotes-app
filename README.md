@@ -28,9 +28,9 @@ A single page quote generator app. Uses the [Animechan API](https://animechan.xy
 ## Running the app
 ### To start the backend:
 - Run `docker compose up --detach` in terminal from the root of this project. 
-  - This will create a postgres database container needed for the app, as well as a pgAdmin container to query the database. 
+  - This will create a mongodb database container needed for the app, as well as a mongo express container to view and query the database. 
 - Run the main method of `QuotesAppApplication.java`
-- The app will be available on `http://localhost:8080` to receive requests.
+- The backend will be available on `http://localhost:8080` to receive requests.
 
 ### To start the frontend:
 - Navigate to `src/frontend`
