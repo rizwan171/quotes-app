@@ -26,8 +26,8 @@ public class QuoteRestApiController {
 
   @JsonView(Views.Get.class)
   @GetMapping
-  public ResponseEntity<List<QuoteJson>> getAllQuotes() {
-    return ResponseEntity.ok().body(quoteService.getAllQuotesJson());
+  public ResponseEntity<List<QuoteJson>> getAllUserSavedQuotes() {
+    return ResponseEntity.ok().body(quoteService.getAllUserSavedQuotesJson());
   }
 
   @JsonView(Views.Post.class)

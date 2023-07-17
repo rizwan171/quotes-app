@@ -1,6 +1,5 @@
 package com.rizwan.quotesapp.quote.controller;
 
-import com.rizwan.quotesapp.quote.controller.QuoteRestApiController;
 import com.rizwan.quotesapp.quote.model.Quote;
 import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import com.rizwan.quotesapp.quote.model.json.QuoteJson;
@@ -37,10 +36,10 @@ class QuoteRestApiControllerTest {
   private QuoteService quoteService;
 
   @Test
-  void getAllQuotes() throws Exception {
+  void getAllUserSavedQuotes() throws Exception {
     var quoteJson1 = generateQuoteJson();
     var quoteJson2 = generateQuoteJson();
-    when(quoteService.getAllQuotesJson()).thenReturn(List.of(quoteJson1, quoteJson2));
+    when(quoteService.getAllUserSavedQuotesJson()).thenReturn(List.of(quoteJson1, quoteJson2));
 
     mockMvc.perform(get("/api/v1/quotes")
       .contentType(MediaType.APPLICATION_JSON))

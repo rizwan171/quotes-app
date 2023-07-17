@@ -1,6 +1,7 @@
 package com.rizwan.quotesapp.quote.service;
 
 import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import com.rizwan.quotesapp.quote.model.json.QuoteJson;
 import com.rizwan.quotesapp.quote.repository.QuoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,9 @@ public class QuoteService {
     this.quoteRepository = quoteRepository;
   }
 
-  public List<QuoteJson> getAllQuotesJson() {
+  public List<QuoteJson> getAllUserSavedQuotesJson() {
     return Streamable.of(quoteRepository.findAll()).stream()
+      .filter(quote -> quote.getCreationType() != CreationType.GENERATED)
       .map(QuoteJson::fromEntity)
       .toList();
   }

@@ -67,9 +67,13 @@ class QuoteApiSmokeTest {
   }
 
   @Test
-  void getAllQuotes() {
-    quoteService.saveQuote(new QuoteJson(null, "Random Quote",
-      "Random Author", "Random Origin", CreationType.MANUAL));
+  void getAllUserSavedQuotes() {
+    quoteService.saveQuote(new QuoteJson(null, "Random Quote 1",
+      "Random Author 1", "Random Origin 1", CreationType.MANUAL));
+    quoteService.saveQuote(new QuoteJson(null, "Random Quote 2",
+      "Random Author 2", "Random Origin 2", CreationType.SAVED));
+    quoteService.saveQuote(new QuoteJson(null, "Random Quote 3",
+      "Random Author 3", "Random Origin 3", CreationType.GENERATED));
 
     var quotesReturned = given()
       .when()
@@ -79,7 +83,10 @@ class QuoteApiSmokeTest {
       .extract()
       .as(QuoteJson[].class);
     assertThat(quotesReturned).extracting(QuoteJson::quoteText, QuoteJson::author, QuoteJson::origin, QuoteJson::creationType)
-      .containsExactly(tuple("Random Quote", "Random Author", "Random Origin", CreationType.MANUAL));
+      .containsExactly(
+        tuple("Random Quote 1", "Random Author 1", "Random Origin 1", CreationType.MANUAL),
+        tuple("Random Quote 2", "Random Author 2", "Random Origin 2", CreationType.SAVED)
+      );
   }
 
   @Test

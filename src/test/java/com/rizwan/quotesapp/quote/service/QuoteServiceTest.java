@@ -4,7 +4,6 @@ import com.rizwan.quotesapp.quote.model.Quote;
 import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import com.rizwan.quotesapp.quote.model.json.QuoteJson;
 import com.rizwan.quotesapp.quote.repository.QuoteRepository;
-import com.rizwan.quotesapp.quote.service.QuoteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -34,34 +33,20 @@ class QuoteServiceTest {
   private ArgumentCaptor<Quote> argumentCaptor;
 
   @Test
-  void getAllQuotesJson() {
-    var quote1 = new Quote()
-      .setId(UUID.randomUUID())
-      .setQuoteText("Quote Text 1")
-      .setAuthor("Author 1")
-      .setOrigin("Origin 1")
-      .setCreationType(CreationType.MANUAL);
-    var quote2 = new Quote()
-      .setId(UUID.randomUUID())
-      .setQuoteText("Quote Text 2")
-      .setAuthor("Author 2")
-      .setOrigin("Origin 2")
-      .setCreationType(CreationType.SAVED);
-    when(quoteRepository.findAll()).thenReturn(List.of(quote1, quote2));
+  void getAllUserSavedQuotesJson() {
+    var quote1 = generateQuote(CreationType.MANUAL);
+    var quote2 = generateQuote(CreationType.SAVED);
+    var quote3 = generateQuote(CreationType.GENERATED);
+    when(quoteRepository.findAll()).thenReturn(List.of(quote1, quote2, quote3));
 
     var quoteJson1 = QuoteJson.fromEntity(quote1);
     var quoteJson2 = QuoteJson.fromEntity(quote2);
-    assertThat(quoteService.getAllQuotesJson()).contains(quoteJson1, quoteJson2);
+    assertThat(quoteService.getAllUserSavedQuotesJson()).contains(quoteJson1, quoteJson2);
   }
 
   @Test
   void saveQuote() {
-    var quote = new Quote()
-      .setId(UUID.randomUUID())
-      .setQuoteText("Quote Text 1")
-      .setAuthor("Author 1")
-      .setOrigin("Origin 1")
-      .setCreationType(CreationType.MANUAL);
+    var quote = generateQuote(CreationType.MANUAL);
     var quoteJson = QuoteJson.fromEntity(quote);
 
     when(quoteRepository.save(any(Quote.class))).thenReturn(quote);
@@ -92,6 +77,14 @@ class QuoteServiceTest {
     var invalidQuoteJson = new QuoteJson(null, "Quote", null, null, null);
     assertThat(quoteService.validateQuote(invalidQuoteJson))
       .containsEntry("creationType", "Creation type must not be null");
+  }
 
+  private Quote generateQuote(CreationType creationType) {
+    return new Quote()
+      .setId(UUID.randomUUID())
+      .setQuoteText("Random Quote")
+      .setAuthor("Random Author")
+      .setOrigin("Random Origin")
+      .setCreationType(creationType);
   }
 }
