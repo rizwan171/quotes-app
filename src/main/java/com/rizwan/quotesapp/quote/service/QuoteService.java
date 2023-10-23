@@ -19,7 +19,6 @@ public class QuoteService {
   @Autowired
   private final QuoteRepository quoteRepository;
 
-  @Autowired
   public QuoteService(QuoteRepository quoteRepository) {
     this.quoteRepository = quoteRepository;
   }

@@ -19,7 +19,6 @@ public class QuoteRestApiController {
   @Autowired
   private final QuoteService quoteService;
 
-  @Autowired
   public QuoteRestApiController(QuoteService quoteService) {
     this.quoteService = quoteService;
   }
