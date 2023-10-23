@@ -9,8 +9,8 @@ export const getAllUserSavedQuotes = async (): Promise<Quote[] | null> => {
     return null;
   }
 
-  const quotes = await response.json();
-  return quotes as Quote[];
+  const quotes: Quote[] = await response.json();
+  return quotes;
 };
 
 export const saveGeneratedQuote = async (generatedQuote: GeneratedQuote): Promise<Quote | null> => {
@@ -31,6 +31,6 @@ export const saveGeneratedQuote = async (generatedQuote: GeneratedQuote): Promis
     return null;
   }
 
-  const savedQuote = await response.json();
-  return savedQuote as Quote;
+  const savedQuote: Quote = await response.json();
+  return savedQuote;
 };

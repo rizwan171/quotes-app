@@ -1,6 +1,7 @@
 import { ANIME_CHAN_API_URL } from "@/constants/api_urls";
 import type { GeneratedQuote } from "@/types/GeneratedQuote";
 import type { QuoteGenerationOptions } from "@/types/QuoteGenerationOptions";
+import { saveGeneratedQuote } from "./QuouteService";
 
 export const generateQuote = async (options?: QuoteGenerationOptions): Promise<GeneratedQuote | null> => {
   let requestOptionsString = "";
@@ -16,13 +17,10 @@ export const generateQuote = async (options?: QuoteGenerationOptions): Promise<G
     return null;
   }
 
-  const quote = await response.json();
+  const generatedQuote: GeneratedQuote = await response.json();
 
-  // TODO save this generated quote somewhere
+  // save generated quote
+  await saveGeneratedQuote(generatedQuote);
 
-  return {
-    quoteText: quote.quote,
-    author: quote.character,
-    origin: quote.anime
-  };
+  return generatedQuote;
 };
