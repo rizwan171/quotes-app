@@ -2,7 +2,16 @@ import { SERVER_API_URL } from "@/constants/api_urls";
 import type { GeneratedQuote } from "@/types/GeneratedQuote";
 import type { Quote } from "@/types/Quote";
 
-export const getAllUserSavedQuotes = async () => {};
+export const getAllUserSavedQuotes = async (): Promise<Quote[] | null> => {
+  const response = await fetch(SERVER_API_URL, { method: "GET" });
+
+  if (response.status !== 200) {
+    return null;
+  }
+
+  const quotes = await response.json();
+  return quotes as Quote[];
+};
 
 export const saveGeneratedQuote = async (generatedQuote: GeneratedQuote): Promise<Quote | null> => {
   const response = await fetch(SERVER_API_URL, {
