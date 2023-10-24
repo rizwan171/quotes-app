@@ -1,5 +1,5 @@
 export type GeneratedQuote = {
-  quoteText: string;
-  author?: string;
-  origin?: string | null;
+  quote: string;
+  character: string;
+  anime: string;
 };
