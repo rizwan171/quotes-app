@@ -10,10 +10,10 @@ export const generateQuote = async (options?: QuoteGenerationOptions): Promise<Q
   if (options && options.anime) {
     requestOptionsString += `/anime?title=${options.anime}`;
   }
-
+  
   const response = await fetch(ANIME_CHAN_API_URL + requestOptionsString, {
     method: "GET"
-  });
+  });  
 
   if (response.status !== 200) {
     // TODO handle any errors from API
@@ -29,6 +29,8 @@ export const generateQuote = async (options?: QuoteGenerationOptions): Promise<Q
     origin: generatedQuote.anime,
     creationType: CreationType.GENERATED
   };
+
+  // TODO handle any errors from this call
   await saveQuote(quote);
 
   return quote;
