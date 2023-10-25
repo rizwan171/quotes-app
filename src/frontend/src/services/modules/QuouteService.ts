@@ -27,7 +27,7 @@ export const saveQuote = async (quote: Quote): Promise<Quote | null> => {
     body: JSON.stringify(quote)
   });
 
-  if (response.status !== 200) {
+  if (!response.ok) {
     if (response.status == 400) {
       // TODO handle bad request
     }
@@ -35,6 +35,7 @@ export const saveQuote = async (quote: Quote): Promise<Quote | null> => {
     return null;
   }
 
+  // TODO the response returned is empty, which causes an error. decide whether to return the saved entity or just the id, or keep the backend as is and update here
   const savedQuote: Quote = await response.json();
   return savedQuote;
 };

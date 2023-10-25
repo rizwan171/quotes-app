@@ -64,7 +64,6 @@ export default defineComponent({
         const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
         const savedQuote = await saveQuote(quoteToSave);
 
-        // TODO this is currently bugged. savedQuote will not be populated by the saved value from the API, causing it to always be null here. need to fix
         if (savedQuote === null) {
           failedSave.value = true;
         } else {
