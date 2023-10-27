@@ -50,7 +50,8 @@ class QuoteServiceTest {
     var quoteJson = QuoteJson.fromEntity(quote);
 
     when(quoteRepository.save(any(Quote.class))).thenReturn(quote);
-    assertThat(quoteService.saveQuote(quoteJson)).isEqualTo(quote);
+    assertThat(quoteService.saveQuote(quoteJson)).usingRecursiveComparison()
+      .isEqualTo(quote);
     verify(quoteRepository).save(argumentCaptor.capture());
     assertThat(argumentCaptor.getValue())
       .usingRecursiveComparison()

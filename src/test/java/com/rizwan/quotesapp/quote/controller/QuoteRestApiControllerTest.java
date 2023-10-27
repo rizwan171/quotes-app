@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(QuoteRestApiController.class)
@@ -44,7 +42,7 @@ class QuoteRestApiControllerTest {
     mockMvc.perform(get("/api/v1/quotes")
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
-      .andExpect(MockMvcResultMatchers.content().json("""
+      .andExpect(content().json("""
         [
           {
             "id": %s,
@@ -73,7 +71,9 @@ class QuoteRestApiControllerTest {
       .setCreationType(CreationType.MANUAL);
     var quoteJson = QuoteJson.fromEntity(quote);
     when(quoteService.validateQuote(quoteJson)).thenReturn(Map.of());
-    when(quoteService.saveQuote(quoteJson)).thenReturn(quote);
+
+    var savedQuoteJson = QuoteJson.fromEntity(quote.setId(UUID.randomUUID()));
+    when(quoteService.saveQuote(quoteJson)).thenReturn(savedQuoteJson);
 
     mockMvc.perform(post("/api/v1/quotes")
       .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +86,16 @@ class QuoteRestApiControllerTest {
         }
         """))
       .andExpect(status().isCreated())
-      .andExpect(header().exists("Location"));
+      .andExpect(header().exists("Location"))
+      .andExpect(content().json("""
+        {
+          "id": %s,
+          "quoteText": "Quote",
+          "author": "Author",
+          "origin": "Origin",
+          "creationType": "MANUAL"
+        }
+        """.formatted(savedQuoteJson.id())));
   }
 
   @Test

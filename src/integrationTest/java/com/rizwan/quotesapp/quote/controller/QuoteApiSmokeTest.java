@@ -24,6 +24,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -91,7 +92,7 @@ class QuoteApiSmokeTest {
 
   @Test
   void saveQuote() {
-    var response = given()
+    var savedQuote = given()
       .when()
       .contentType(ContentType.JSON)
       .body("""
@@ -105,8 +106,11 @@ class QuoteApiSmokeTest {
       .post(API_URL)
       .then()
       .statusCode(201)
-      .extract();
-    assertThat(response.header("Location")).isNotNull();
+      .header("Location", notNullValue())
+      .extract()
+      .as(QuoteJson.class);
+    assertThat(savedQuote).extracting(QuoteJson::quoteText, QuoteJson::author, QuoteJson::origin, QuoteJson::creationType)
+      .containsOnly("New Quote", "Author", "Test Origin", CreationType.MANUAL);
   }
 
   @Test
