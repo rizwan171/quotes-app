@@ -30,19 +30,18 @@ public class QuoteRestApiController {
     return ResponseEntity.ok().body(quoteService.getAllUserSavedQuotesJson());
   }
 
-  @JsonView(Views.Post.class)
   @PostMapping
-  public ResponseEntity<?> saveQuote(@RequestBody QuoteJson quoteJson,
-                                     HttpServletRequest request) {
+  public ResponseEntity<?> saveQuote(@JsonView(Views.Post.class) @RequestBody QuoteJson quoteJson, HttpServletRequest request) {
+    // TODO possibly check if the passed quote has not already been saved
     var validationErrors = quoteService.validateQuote(quoteJson);
     if (!validationErrors.isEmpty()) {
       return ResponseEntity.badRequest().body(validationErrors);
     }
 
-    var savedQuote = quoteService.saveQuote(quoteJson);
-    var location = URI.create(request.getRequestURL().append("/").append(savedQuote.getId()).toString());
+    var savedQuoteJson = quoteService.saveQuote(quoteJson);
+    var location = URI.create(request.getRequestURL().append("/").append(savedQuoteJson.id()).toString());
 
-    return ResponseEntity.created(location).build();
+    return ResponseEntity.created(location).body(savedQuoteJson);
   }
 
 }

@@ -30,7 +30,7 @@ public class QuoteService {
       .toList();
   }
 
-  public Quote saveQuote(QuoteJson quoteJson) {
+  public QuoteJson saveQuote(QuoteJson quoteJson) {
     var quote = new Quote()
       .setId(UUID.randomUUID())
       .setQuoteText(quoteJson.quoteText())
@@ -38,7 +38,7 @@ public class QuoteService {
       .setOrigin(quoteJson.origin())
       .setCreationType(quoteJson.creationType());
 
-    return quoteRepository.save(quote);
+    return QuoteJson.fromEntity(quoteRepository.save(quote));
   }
 
   public Map<String, String> validateQuote(QuoteJson quoteJson) {
