@@ -36,9 +36,9 @@ import { defineComponent, ref } from "vue";
 export default defineComponent({
   setup() {
     let quote = ref<Quote>({
-      quoteText: "Kinder beeno and flelo losh.",
-      author: "Qas Khan",
-      origin: "Chaiwali in Bladford",
+      quoteText: "",
+      author: "",
+      origin: "",
       creationType: CreationType.GENERATED
     });
 
@@ -48,6 +48,8 @@ export default defineComponent({
 
     const handleGenerate = async () => {
       loading.value = true;
+      // reset failed save state when generating a new quote
+      failedSave.value = false;
 
       const generatedQuote = await generateQuote();
       if (generatedQuote) {
@@ -60,16 +62,13 @@ export default defineComponent({
     const saveGeneratedQuote = async () => {
       saving.value = true;
 
-      if (!quote.value.id) {
-        const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
-        const savedQuote = await saveQuote(quoteToSave);
+      const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
+      const savedQuote = await saveQuote(quoteToSave);
 
-        if (savedQuote === null) {
-          failedSave.value = true;
-        } else {
-          quote.value = { ...savedQuote };
-          failedSave.value = false;
-        }
+      if (savedQuote === null) {
+        failedSave.value = true;
+      } else {
+        failedSave.value = false;
       }
 
       saving.value = false;
@@ -148,6 +147,6 @@ button {
 }
 
 .saving-failed {
-  background-color: #d42323;
+  background-color: #e6a610;
 }
 </style>

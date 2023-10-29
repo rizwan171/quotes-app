@@ -30,7 +30,7 @@ export const generateQuote = async (options?: QuoteGenerationOptions): Promise<Q
     creationType: CreationType.GENERATED
   };
 
-  // TODO handle any errors from this call
+  // TODO handle any errors from this call. errors may not need to be handled
   await saveQuote(quote);
 
   return quote;
