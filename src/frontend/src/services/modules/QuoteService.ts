@@ -27,7 +27,7 @@ export const saveQuote = async (quote: Quote): Promise<Quote | null> => {
   });
 
   if (!response.ok) {
-    if (response.status == 400) {
+    if (response.status === 400) {
       // TODO handle bad request
     }
 
