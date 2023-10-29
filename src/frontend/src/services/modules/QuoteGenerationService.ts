@@ -1,7 +1,7 @@
 import { ANIME_CHAN_API_URL } from "@/constants/api_urls";
 import type { GeneratedQuote } from "@/types/GeneratedQuote";
 import type { QuoteGenerationOptions } from "@/types/QuoteGenerationOptions";
-import { saveQuote } from "./QuouteService";
+import { saveQuote } from "./QuoteService";
 import type { Quote } from "@/types/Quote";
 import { CreationType } from "@/enums/CreationType";
 

@@ -29,7 +29,7 @@
 <script lang="ts">
 import { CreationType } from "@/enums/CreationType";
 import { generateQuote } from "@/services";
-import { saveQuote } from "@/services/modules/QuouteService";
+import { saveQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
 import { defineComponent, ref } from "vue";
 
