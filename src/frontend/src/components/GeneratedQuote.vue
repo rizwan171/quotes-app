@@ -31,6 +31,7 @@ import { CreationType } from "@/enums/CreationType";
 import { generateQuote } from "@/services";
 import { saveQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
+import { notify } from "@kyvg/vue3-notification";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
@@ -63,12 +64,14 @@ export default defineComponent({
       saving.value = true;
 
       const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
-      const savedQuote = await saveQuote(quoteToSave);
+      const savedQuote = null;
 
       if (savedQuote === null) {
         failedSave.value = true;
+        notify({ text: "Saving failed.", type: "warn" });
       } else {
         failedSave.value = false;
+        notify({ text: "Quote saved successfully.", type: "success" });
       }
 
       saving.value = false;
