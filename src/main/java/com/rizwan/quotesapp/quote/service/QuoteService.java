@@ -25,18 +25,18 @@ public class QuoteService {
 
   public List<QuoteJson> getAllUserSavedQuotesJson() {
     return Streamable.of(quoteRepository.findAll()).stream()
-      .filter(quote -> quote.getCreationType() != CreationType.GENERATED)
-      .map(QuoteJson::fromEntity)
-      .toList();
+        .filter(quote -> quote.getCreationType() != CreationType.GENERATED)
+        .map(QuoteJson::fromEntity)
+        .toList();
   }
 
   public QuoteJson saveQuote(QuoteJson quoteJson) {
     var quote = new Quote()
-      .setId(UUID.randomUUID())
-      .setQuoteText(quoteJson.quoteText())
-      .setAuthor(quoteJson.author())
-      .setOrigin(quoteJson.origin())
-      .setCreationType(quoteJson.creationType());
+        .setId(UUID.randomUUID())
+        .setQuoteText(quoteJson.quoteText())
+        .setAuthor(quoteJson.author())
+        .setOrigin(quoteJson.origin())
+        .setCreationType(quoteJson.creationType());
 
     return QuoteJson.fromEntity(quoteRepository.save(quote));
   }
@@ -53,5 +53,19 @@ public class QuoteService {
     }
 
     return errors;
+  }
+
+  public boolean doesQuoteExist(QuoteJson quoteJson) {
+    return quoteRepository.findById(quoteJson.id()).isPresent();
+  }
+
+  public void updateQuote(QuoteJson quoteJson) {
+    var quote = quoteRepository.findById(quoteJson.id()).orElseThrow();
+    quote.setQuoteText(quoteJson.quoteText());
+    quote.setOrigin(quoteJson.origin());
+    quote.setAuthor(quote.getAuthor());
+    quote.setCreationType(quoteJson.creationType());
+
+    quoteRepository.save(quote);
   }
 }

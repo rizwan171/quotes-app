@@ -8,15 +8,15 @@ import com.rizwan.quotesapp.quote.views.Views;
 import java.util.UUID;
 
 public record QuoteJson(
-  @JsonView(Views.Get.class)
+  @JsonView({Views.Get.class, Views.Patch.class})
   UUID id,
-  @JsonView({Views.Get.class, Views.Post.class})
+  @JsonView({Views.Get.class, Views.Post.class, Views.Patch.class})
   String quoteText,
-  @JsonView({Views.Get.class, Views.Post.class})
+  @JsonView({Views.Get.class, Views.Post.class, Views.Patch.class})
   String author,
-  @JsonView({Views.Get.class, Views.Post.class})
+  @JsonView({Views.Get.class, Views.Post.class, Views.Patch.class})
   String origin,
-  @JsonView({Views.Get.class, Views.Post.class})
+  @JsonView({Views.Get.class, Views.Post.class, Views.Patch.class})
   CreationType creationType
 ) {
   public static QuoteJson fromEntity(Quote quote) {

@@ -32,7 +32,6 @@ public class QuoteRestApiController {
 
   @PostMapping
   public ResponseEntity<?> saveQuote(@JsonView(Views.Post.class) @RequestBody QuoteJson quoteJson, HttpServletRequest request) {
-    // TODO possibly check if the passed quote has not already been saved
     var validationErrors = quoteService.validateQuote(quoteJson);
     if (!validationErrors.isEmpty()) {
       return ResponseEntity.badRequest().body(validationErrors);
@@ -42,6 +41,22 @@ public class QuoteRestApiController {
     var location = URI.create(request.getRequestURL().append("/").append(savedQuoteJson.id()).toString());
 
     return ResponseEntity.created(location).body(savedQuoteJson);
+  }
+
+  @PatchMapping
+  public ResponseEntity<?> updateQuote(@JsonView(Views.Patch.class) @RequestBody QuoteJson quoteJson) {
+    if (quoteService.doesQuoteExist(quoteJson)) {
+      return ResponseEntity.notFound().build();
+    }
+
+    var validationErrors = quoteService.validateQuote(quoteJson);
+    if (!validationErrors.isEmpty()) {
+      return ResponseEntity.badRequest().body(validationErrors);
+    }
+
+    quoteService.updateQuote(quoteJson);
+
+    return ResponseEntity.ok().build();
   }
 
 }
