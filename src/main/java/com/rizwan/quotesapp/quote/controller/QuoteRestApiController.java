@@ -45,7 +45,7 @@ public class QuoteRestApiController {
 
   @PatchMapping
   public ResponseEntity<?> updateQuote(@JsonView(Views.Patch.class) @RequestBody QuoteJson quoteJson) {
-    if (quoteService.doesQuoteExist(quoteJson)) {
+    if (!quoteService.doesQuoteExist(quoteJson)) {
       return ResponseEntity.notFound().build();
     }
 

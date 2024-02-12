@@ -60,10 +60,11 @@ public class QuoteService {
   }
 
   public void updateQuote(QuoteJson quoteJson) {
-    var quote = quoteRepository.findById(quoteJson.id()).orElseThrow();
+    var quote = quoteRepository.findById(quoteJson.id())
+      .orElseThrow(() -> new IllegalArgumentException("No quote for id %s".formatted(quoteJson.id())));
     quote.setQuoteText(quoteJson.quoteText());
     quote.setOrigin(quoteJson.origin());
-    quote.setAuthor(quote.getAuthor());
+    quote.setAuthor(quoteJson.author());
     quote.setCreationType(quoteJson.creationType());
 
     quoteRepository.save(quote);

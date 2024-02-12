@@ -13,9 +13,11 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,6 +80,52 @@ class QuoteServiceTest {
     var invalidQuoteJson = new QuoteJson(null, "Quote", null, null, null);
     assertThat(quoteService.validateQuote(invalidQuoteJson))
       .containsEntry("creationType", "Creation type must not be null");
+  }
+
+  @Test
+  void doesQuoteExist() {
+    var existingQuote = generateQuote(CreationType.GENERATED);
+    var existingQuoteJson = QuoteJson.fromEntity(existingQuote);
+    when(quoteRepository.findById(existingQuote.getId())).thenReturn(Optional.of(existingQuote));
+
+    assertThat(quoteService.doesQuoteExist(existingQuoteJson)).isTrue();
+  }
+
+  @Test
+  void doesQuoteExist_nonExistent() {
+    var nonExistentQuoteJson = new QuoteJson(UUID.randomUUID(), null, null, null, null);
+    when(quoteRepository.findById(any())).thenReturn(Optional.empty());
+
+    assertThat(quoteService.doesQuoteExist(nonExistentQuoteJson)).isFalse();
+  }
+
+  @Test
+  void updateQuote() {
+    var quote = generateQuote(CreationType.GENERATED);
+    when(quoteRepository.findById(quote.getId())).thenReturn(Optional.of(quote));
+
+    var updatedQuote = new Quote()
+      .setId(quote.getId())
+      .setQuoteText("Updated Quote")
+      .setAuthor("Updated Author")
+      .setOrigin("Updated Origin")
+      .setCreationType(CreationType.SAVED);
+    var updatedQuoteJson = QuoteJson.fromEntity(updatedQuote);
+
+    quoteService.updateQuote(updatedQuoteJson);
+    verify(quoteRepository).save(argumentCaptor.capture());
+    assertThat(argumentCaptor.getValue())
+      .usingRecursiveComparison()
+      .isEqualTo(updatedQuote);
+  }
+
+  @Test
+  void updateQuote_throws() {
+    var nonExistentQuoteJson = new QuoteJson(UUID.randomUUID(), null, null, null, null);
+    when(quoteRepository.findById(any())).thenReturn(Optional.empty());
+
+    var exception = assertThrows(IllegalArgumentException.class, () -> quoteService.updateQuote(nonExistentQuoteJson));
+    assertThat(exception.getMessage()).isEqualTo("No quote for id %s".formatted(nonExistentQuoteJson.id()));
   }
 
   private Quote generateQuote(CreationType creationType) {

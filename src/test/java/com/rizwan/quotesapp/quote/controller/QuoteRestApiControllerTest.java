@@ -19,8 +19,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -103,6 +102,58 @@ class QuoteRestApiControllerTest {
     when(quoteService.validateQuote(any(QuoteJson.class))).thenReturn(Map.of("error", "Error"));
     mockMvc.perform(post("/api/v1/quotes")
       .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void updateQuote() throws Exception {
+    var quote = new Quote()
+      .setId(UUID.randomUUID())
+      .setQuoteText("Updated Quote")
+      .setAuthor("Updated Author")
+      .setOrigin("Updated Origin")
+      .setCreationType(CreationType.MANUAL);
+    var quoteJson = QuoteJson.fromEntity(quote);
+
+    when(quoteService.doesQuoteExist(quoteJson)).thenReturn(true);
+    when(quoteService.validateQuote(quoteJson)).thenReturn(Map.of());
+
+    mockMvc.perform(patch("/api/v1/quotes")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+        {
+          "id": "%s",
+          "quoteText": "Updated Quote",
+          "author": "Updated Author",
+          "origin": "Updated Origin",
+          "creationType": "MANUAL"
+        }
+        """.formatted(quote.getId())))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  void updateQuote_nonExistentQuote() throws Exception {
+    when(quoteService.doesQuoteExist(any(QuoteJson.class))).thenReturn(false);
+    mockMvc.perform(patch("/api/v1/quotes")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content("""
+        {
+          "id": "%s",
+          "quoteText": "Updated Quote",
+          "author": "Updated Author",
+          "origin": "Updated Origin",
+          "creationType": "MANUAL"
+        }
+        """.formatted(UUID.randomUUID())))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void updateQuote_validationError() throws Exception {
+    when(quoteService.validateQuote(any(QuoteJson.class))).thenReturn(Map.of("error", "Error"));
+    mockMvc.perform(patch("/api/v1/quotes")
+        .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest());
   }
 
