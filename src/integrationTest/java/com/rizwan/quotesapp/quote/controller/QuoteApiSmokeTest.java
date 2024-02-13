@@ -111,11 +111,15 @@ class QuoteApiSmokeTest {
       .as(QuoteJson.class);
     assertThat(savedQuote).extracting(QuoteJson::quoteText, QuoteJson::author, QuoteJson::origin, QuoteJson::creationType)
       .containsOnly("New Quote", "Author", "Test Origin", CreationType.MANUAL);
+    assertThat(quoteRepository.findById(savedQuote.id())).isPresent()
+      .get()
+      .usingRecursiveComparison()
+      .isEqualTo(savedQuote);
   }
 
   @Test
   void saveQuote_validationError() {
-    var response = given()
+    given()
       .when()
       .contentType(ContentType.JSON)
       .body("""
@@ -129,5 +133,6 @@ class QuoteApiSmokeTest {
       .statusCode(400)
       .body("quoteText", equalTo("Quote text must not be null"))
       .body("creationType", equalTo("Creation type must not be null"));
+    assertThat(quoteRepository.findAll()).isEmpty();
   }
 }
