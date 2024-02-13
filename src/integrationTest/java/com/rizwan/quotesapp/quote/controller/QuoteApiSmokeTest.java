@@ -1,5 +1,6 @@
 package com.rizwan.quotesapp.quote.controller;
 
+import com.rizwan.quotesapp.quote.model.Quote;
 import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import com.rizwan.quotesapp.quote.model.json.QuoteJson;
 import com.rizwan.quotesapp.quote.repository.QuoteRepository;
@@ -19,6 +20,8 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -134,5 +137,82 @@ class QuoteApiSmokeTest {
       .body("quoteText", equalTo("Quote text must not be null"))
       .body("creationType", equalTo("Creation type must not be null"));
     assertThat(quoteRepository.findAll()).isEmpty();
+  }
+
+  @Test
+  void updateQuote() {
+    var quote = quoteService.saveQuote(new QuoteJson(UUID.randomUUID(), "Quote", "Author",
+      "Origin", CreationType.MANUAL));
+
+    given()
+      .when()
+      .contentType(ContentType.JSON)
+      .body("""
+        {
+          "id": "%s",
+          "quoteText": "Updated Quote",
+        	"author": "Updated Author",
+        	"origin": "Updated Origin",
+        	"creationType": "SAVED"
+        }
+        """.formatted(quote.id()))
+      .patch(API_URL)
+      .then()
+      .statusCode(200);
+
+    assertThat(quoteRepository.findById(quote.id())).isPresent()
+      .get()
+      .extracting(Quote::getQuoteText, Quote::getAuthor, Quote::getOrigin, Quote::getCreationType)
+      .containsOnly("Updated Quote", "Updated Author", "Updated Origin", CreationType.SAVED);
+  }
+
+  @Test
+  void updateQuote_nonExistentQuote() {
+    given()
+      .when()
+      .contentType(ContentType.JSON)
+      .body("""
+        {
+          "id": "%s",
+          "quoteText": "Non Existent Quote",
+        	"author": "Author",
+        	"origin": "Origin",
+        	"creationType": "MANUAL"
+        }
+        """.formatted(UUID.randomUUID()))
+      .patch(API_URL)
+      .then()
+      .statusCode(404);
+
+    assertThat(quoteRepository.findAll()).isEmpty();
+  }
+
+  @Test
+  void updateQuote_validationError() {
+    var quote = quoteService.saveQuote(new QuoteJson(UUID.randomUUID(), "Quote", "Author",
+      "Origin", CreationType.MANUAL));
+
+    given()
+      .when()
+      .contentType(ContentType.JSON)
+      .body("""
+        {
+          "id": "%s",
+          "quoteText": "",
+        	"author": "Updated Author",
+        	"origin": "Updated Origin",
+        	"creationType": null
+        }
+        """.formatted(quote.id()))
+      .patch(API_URL)
+      .then()
+      .statusCode(400)
+      .body("quoteText", equalTo("Quote text must not be null"))
+      .body("creationType", equalTo("Creation type must not be null"));
+
+    assertThat(quoteRepository.findById(quote.id())).isPresent()
+      .get()
+      .usingRecursiveComparison()
+      .isEqualTo(quote);
   }
 }
