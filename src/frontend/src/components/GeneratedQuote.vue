@@ -13,14 +13,15 @@
       </button>
       <button
         class="btn-save-generated-quote"
-        :class="{ 'saving-failed': failedSave }"
+        :class="{ 'saving-failed': failedSave, 'saving-complete': savingComplete }"
+        :disabled="savingComplete"
         v-if="quote.quoteText"
         @click="saveGeneratedQuote"
       >
-        <font-awesome-icon icon="floppy-disk" size="lg" v-if="!failedSave && !saving" />
+        <font-awesome-icon icon="floppy-disk" size="lg" v-if="!failedSave && !saving && !savingComplete" />
         <font-awesome-icon class="fa-spin" icon="circle-notch" size="lg" v-if="saving" />
-        <!-- TODO add a tooltip or notification on screen to indicate failed save. maybe on hover show a retry icon -->
         <font-awesome-icon icon="triangle-exclamation" size="lg" v-if="failedSave && !saving" />
+        <font-awesome-icon icon="check" size="lg" v-if="!failedSave && savingComplete"/>
       </button>
     </div>
   </div>
@@ -46,10 +47,10 @@ export default defineComponent({
     let loading = ref(false);
     let saving = ref(false);
     let failedSave = ref(false);
+    let savingComplete = ref(false);
 
     const handleGenerate = async () => {
       loading.value = true;
-      // reset failed save state when generating a new quote
       failedSave.value = false;
 
       const generatedQuote = await generateQuote();
@@ -64,20 +65,22 @@ export default defineComponent({
       saving.value = true;
 
       const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
-      const savedQuote = null;
+      const savedQuote = await saveQuote(quoteToSave);
 
       if (savedQuote === null) {
         failedSave.value = true;
         notify({ text: "Saving failed.", type: "warn" });
       } else {
         failedSave.value = false;
+        savingComplete.value = true;
+        quote.value = savedQuote;
         notify({ text: "Quote saved successfully.", type: "success" });
       }
 
       saving.value = false;
     };
 
-    return { quote, loading, saving, failedSave, handleGenerate, saveGeneratedQuote };
+    return { quote, loading, saving, failedSave, savingComplete, handleGenerate, saveGeneratedQuote };
   }
 });
 </script>
@@ -151,5 +154,9 @@ button {
 
 .saving-failed {
   background-color: #e6a610;
+}
+
+.saving-complete {
+  cursor: not-allowed;
 }
 </style>
