@@ -65,19 +65,23 @@ export default defineComponent({
       saving.value = true;
 
       const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
-      const savedQuote = await saveQuote(quoteToSave);
-
-      if (savedQuote === null) {
+      try {
+        const savedQuote = await saveQuote(quoteToSave);
+        
+        if (savedQuote === null) {
+          failedSave.value = true;
+          notify({ text: "Saving failed.", type: "warn" });
+        } else {
+          failedSave.value = false;
+          savingComplete.value = true;
+          quote.value = savedQuote;
+          notify({ text: "Quote saved successfully.", type: "success" });
+        }
+      } catch(error) {
         failedSave.value = true;
-        notify({ text: "Saving failed.", type: "warn" });
-      } else {
-        failedSave.value = false;
-        savingComplete.value = true;
-        quote.value = savedQuote;
-        notify({ text: "Quote saved successfully.", type: "success" });
+      } finally {
+        saving.value = false;
       }
-
-      saving.value = false;
     };
 
     return { quote, loading, saving, failedSave, savingComplete, handleGenerate, saveGeneratedQuote };
@@ -157,6 +161,10 @@ button {
 }
 
 .saving-complete {
-  cursor: not-allowed;
+  cursor: default;
+}
+
+.saving-complete:hover {
+  filter: none;
 }
 </style>
