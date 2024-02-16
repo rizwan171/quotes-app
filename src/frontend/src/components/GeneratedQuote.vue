@@ -11,17 +11,21 @@
         <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="loading" />
         <span>Generate Quote</span>
       </button>
+      <!-- TODO instead of @, register listener when save clicked and deregister when save completed -->
       <button
         class="btn-save-generated-quote"
         :class="{ 'saving-failed': failedSave, 'saving-complete': savingComplete }"
         :disabled="savingComplete"
         v-if="quote.quoteText"
         @click="saveGeneratedQuote"
+        @mouseover="handleMouseEnter"
+        @mouseout="handleMouseLeave"
       >
+        <!-- TODO tidy up the v-if logic here by encappsulating into one var -->
         <font-awesome-icon icon="floppy-disk" size="lg" v-if="!failedSave && !saving && !savingComplete" />
         <font-awesome-icon class="fa-spin" icon="circle-notch" size="lg" v-if="saving" />
-        <font-awesome-icon icon="triangle-exclamation" size="lg" v-if="failedSave && !saving" />
-        <font-awesome-icon icon="check" size="lg" v-if="!failedSave && savingComplete"/>
+        <font-awesome-icon :icon="failedSaveIcon" size="lg" v-if="failedSave && !saving" />
+        <font-awesome-icon icon="check" size="lg" v-if="!failedSave && savingComplete" />
       </button>
     </div>
   </div>
@@ -48,6 +52,7 @@ export default defineComponent({
     let saving = ref(false);
     let failedSave = ref(false);
     let savingComplete = ref(false);
+    let failedSaveIcon = ref("triangle-exclamation");
 
     const handleGenerate = async () => {
       loading.value = true;
@@ -67,7 +72,7 @@ export default defineComponent({
       const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
       try {
         const savedQuote = await saveQuote(quoteToSave);
-        
+
         if (savedQuote === null) {
           failedSave.value = true;
           notify({ text: "Saving failed.", type: "warn" });
@@ -77,14 +82,40 @@ export default defineComponent({
           quote.value = savedQuote;
           notify({ text: "Quote saved successfully.", type: "success" });
         }
-      } catch(error) {
+      } catch (error) {
         failedSave.value = true;
       } finally {
         saving.value = false;
       }
     };
 
-    return { quote, loading, saving, failedSave, savingComplete, handleGenerate, saveGeneratedQuote };
+    const handleMouseEnter = () => {
+      console.log("hit1");
+
+      if (failedSave.value && !saving.value) {
+        failedSaveIcon.value = "rotate-left";
+      }
+    };
+
+    const handleMouseLeave = () => {
+      console.log("hit2");
+      if (failedSave.value && !saving.value) {
+        failedSaveIcon.value = "triangle-exclamation";
+      }
+    };
+
+    return {
+      quote,
+      loading,
+      saving,
+      failedSave,
+      failedSaveIcon,
+      savingComplete,
+      handleGenerate,
+      saveGeneratedQuote,
+      handleMouseEnter,
+      handleMouseLeave
+    };
   }
 });
 </script>
