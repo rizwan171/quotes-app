@@ -14,18 +14,18 @@
       <!-- TODO instead of @, register listener when save clicked and deregister when save completed -->
       <button
         class="btn-save-generated-quote"
-        :class="{ 'saving-failed': failedSave, 'saving-complete': savingComplete }"
-        :disabled="savingComplete"
-        v-if="quote.quoteText"
+        :class="{ 'save-failed': saveFailed, 'save-complete': saveComplete }"
+        :disabled="saveComplete"
+        v-if="quote.quoteText && !loading"
         @click="saveGeneratedQuote"
         @mouseover="handleMouseEnter"
         @mouseout="handleMouseLeave"
       >
         <!-- TODO tidy up the v-if logic here by encappsulating into one var -->
-        <font-awesome-icon icon="floppy-disk" size="lg" v-if="!failedSave && !saving && !savingComplete" />
+        <font-awesome-icon icon="floppy-disk" size="lg" v-if="!saveFailed && !saving && !saveComplete" />
         <font-awesome-icon class="fa-spin" icon="circle-notch" size="lg" v-if="saving" />
-        <font-awesome-icon :icon="failedSaveIcon" size="lg" v-if="failedSave && !saving" />
-        <font-awesome-icon icon="check" size="lg" v-if="!failedSave && savingComplete" />
+        <font-awesome-icon :icon="saveFailedIcon" size="lg" v-if="saveFailed && !saving" />
+        <font-awesome-icon icon="check" size="lg" v-if="!saveFailed && saveComplete" />
       </button>
     </div>
   </div>
@@ -50,13 +50,15 @@ export default defineComponent({
 
     let loading = ref(false);
     let saving = ref(false);
-    let failedSave = ref(false);
-    let savingComplete = ref(false);
-    let failedSaveIcon = ref("triangle-exclamation");
+    let saveFailed = ref(false);
+    let saveComplete = ref(false);
+    let saveFailedIcon = ref("triangle-exclamation");
 
     const handleGenerate = async () => {
       loading.value = true;
-      failedSave.value = false;
+      saving.value = false;
+      saveFailed.value = false;
+      saveComplete.value = false;
 
       const generatedQuote = await generateQuote();
       if (generatedQuote) {
@@ -74,33 +76,30 @@ export default defineComponent({
         const savedQuote = await saveQuote(quoteToSave);
 
         if (savedQuote === null) {
-          failedSave.value = true;
+          saveFailed.value = true;
           notify({ text: "Saving failed.", type: "warn" });
         } else {
-          failedSave.value = false;
-          savingComplete.value = true;
+          saveFailed.value = false;
+          saveComplete.value = true;
           quote.value = savedQuote;
           notify({ text: "Quote saved successfully.", type: "success" });
         }
       } catch (error) {
-        failedSave.value = true;
+        saveFailed.value = true;
       } finally {
         saving.value = false;
       }
     };
 
     const handleMouseEnter = () => {
-      console.log("hit1");
-
-      if (failedSave.value && !saving.value) {
-        failedSaveIcon.value = "rotate-left";
+      if (saveFailed.value && !saving.value) {
+        saveFailedIcon.value = "rotate-left";
       }
     };
 
     const handleMouseLeave = () => {
-      console.log("hit2");
-      if (failedSave.value && !saving.value) {
-        failedSaveIcon.value = "triangle-exclamation";
+      if (saveFailed.value && !saving.value) {
+        saveFailedIcon.value = "triangle-exclamation";
       }
     };
 
@@ -108,9 +107,9 @@ export default defineComponent({
       quote,
       loading,
       saving,
-      failedSave,
-      failedSaveIcon,
-      savingComplete,
+      saveFailed,
+      saveFailedIcon,
+      saveComplete,
       handleGenerate,
       saveGeneratedQuote,
       handleMouseEnter,
@@ -187,11 +186,11 @@ button {
   background-color: #2ca930;
 }
 
-.saving-failed {
+.save-failed {
   background-color: #e6a610;
 }
 
-.saving-complete {
+.save-complete {
   cursor: default;
 }
 
