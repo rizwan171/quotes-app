@@ -11,15 +11,13 @@
         <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="loading" />
         <span>Generate Quote</span>
       </button>
-      <!-- TODO instead of @, register listener when save clicked and deregister when save completed -->
       <button
+        ref="saveButton"
         class="btn-save-generated-quote"
         :class="{ 'save-failed': saveFailed, 'save-complete': saveComplete }"
         :disabled="saveComplete"
         v-if="quote.quoteText && !loading"
         @click="saveGeneratedQuote"
-        @mouseover="handleMouseEnter"
-        @mouseout="handleMouseLeave"
       >
         <!-- TODO tidy up the v-if logic here by encappsulating into one var -->
         <font-awesome-icon icon="floppy-disk" size="lg" v-if="!saveFailed && !saving && !saveComplete" />
@@ -37,7 +35,7 @@ import { generateQuote } from "@/services";
 import { saveQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
 import { notify } from "@kyvg/vue3-notification";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, type Ref } from "vue";
 
 export default defineComponent({
   setup() {
@@ -49,6 +47,7 @@ export default defineComponent({
     });
 
     let loading = ref(false);
+    let saveButton: Ref<HTMLButtonElement | null> = ref(null);
     let saving = ref(false);
     let saveFailed = ref(false);
     let saveComplete = ref(false);
@@ -88,6 +87,18 @@ export default defineComponent({
         saveFailed.value = true;
       } finally {
         saving.value = false;
+
+        if (saveButton.value) {
+          if (saveFailed.value) {
+            saveButton.value.addEventListener("mouseover", handleMouseEnter);
+            saveButton.value.addEventListener("mouseout", handleMouseLeave);
+          }
+
+          if (saveComplete.value) {
+            saveButton.value.removeEventListener("mouseover", handleMouseEnter);
+            saveButton.value.removeEventListener("mouseout", handleMouseLeave);
+          }
+        }
       }
     };
 
@@ -106,6 +117,7 @@ export default defineComponent({
     return {
       quote,
       loading,
+      saveButton,
       saving,
       saveFailed,
       saveFailedIcon,
