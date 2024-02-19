@@ -19,11 +19,10 @@
         v-if="quote.quoteText && !loading"
         @click="saveGeneratedQuote"
       >
-        <!-- TODO tidy up the v-if logic here by encappsulating into one var -->
-        <font-awesome-icon icon="floppy-disk" size="lg" v-if="!saveFailed && !saving && !saveComplete" />
+        <font-awesome-icon icon="floppy-disk" size="lg" v-if="showSaveIcon" />
         <font-awesome-icon class="fa-spin" icon="circle-notch" size="lg" v-if="saving" />
-        <font-awesome-icon :icon="saveFailedIcon" size="lg" v-if="saveFailed && !saving" />
-        <font-awesome-icon icon="check" size="lg" v-if="!saveFailed && saveComplete" />
+        <font-awesome-icon :icon="saveFailedIcon" size="lg" v-if="showSaveFailedIcon" />
+        <font-awesome-icon icon="check" size="lg" v-if="showSaveCompleteIcon" />
       </button>
     </div>
   </div>
@@ -35,7 +34,7 @@ import { generateQuote } from "@/services";
 import { saveQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
 import { notify } from "@kyvg/vue3-notification";
-import { defineComponent, ref, type Ref } from "vue";
+import { computed, defineComponent, ref, type Ref } from "vue";
 
 export default defineComponent({
   setup() {
@@ -46,12 +45,24 @@ export default defineComponent({
       creationType: CreationType.GENERATED
     });
 
-    let loading = ref(false);
-    let saveButton: Ref<HTMLButtonElement | null> = ref(null);
-    let saving = ref(false);
-    let saveFailed = ref(false);
-    let saveComplete = ref(false);
-    let saveFailedIcon = ref("triangle-exclamation");
+    const loading = ref(false);
+    const saveButton: Ref<HTMLButtonElement | null> = ref(null);
+    const saving = ref(false);
+    const saveFailed = ref(false);
+    const saveComplete = ref(false);
+    const saveFailedIcon = ref("triangle-exclamation");
+
+    const showSaveIcon = computed(() => {
+      return !saveFailed.value && !saving.value && !saveComplete.value;
+    });
+
+    const showSaveFailedIcon = computed(() => {
+      return saveFailed.value && !saving.value;
+    });
+
+    const showSaveCompleteIcon = computed(() => {
+      return !saveFailed.value && saveComplete.value;
+    });
 
     const handleGenerate = async () => {
       loading.value = true;
@@ -122,6 +133,9 @@ export default defineComponent({
       saveFailed,
       saveFailedIcon,
       saveComplete,
+      showSaveIcon,
+      showSaveFailedIcon,
+      showSaveCompleteIcon,
       handleGenerate,
       saveGeneratedQuote,
       handleMouseEnter,
@@ -206,7 +220,7 @@ button {
   cursor: default;
 }
 
-.saving-complete:hover {
+.save-complete:hover {
   filter: none;
 }
 </style>
