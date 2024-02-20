@@ -1,14 +1,20 @@
 <template>
   <div class="generate-quote-container">
     <div class="generated-quote-info">
-      <span class="no-generated-quote" v-if="!quote.quoteText">Click the button below to get a quote...</span>
+      <span class="italic" v-if="!quote.quoteText && !generating && !generationFailed"
+        >Click the button below to get a quote...</span
+      >
+      <span class="italic" v-if="generating">Generating quote...</span>
+      <span v-if="!generating && generationFailed"
+        >There was a problem generating a quote. If this issue persists, please try again later.</span
+      >
       <span class="generated-quote-text">{{ quote.quoteText }}</span>
       <span class="generated-quote-author" v-if="quote.author">- By {{ quote.author }}</span>
       <span class="generated-quote-origin" v-if="quote.origin">- From {{ quote.origin }}</span>
     </div>
     <div class="generated-quote-actions">
       <button class="btn-generate-quote" @click="handleGenerate">
-        <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="loading" />
+        <font-awesome-icon class="spinner-icon fa-spin" icon="circle-notch" size="lg" v-if="generating" />
         <span>Generate Quote</span>
       </button>
       <button
@@ -16,7 +22,7 @@
         class="btn-save-generated-quote"
         :class="{ 'save-failed': saveFailed, 'save-complete': saveComplete }"
         :disabled="saveComplete"
-        v-if="quote.quoteText && !loading"
+        v-if="quote.quoteText && !generating"
         @click="saveGeneratedQuote"
       >
         <font-awesome-icon icon="floppy-disk" size="lg" v-if="showSaveIcon" />
@@ -45,7 +51,8 @@ export default defineComponent({
       creationType: CreationType.GENERATED
     });
 
-    const loading = ref(false);
+    const generating = ref(false);
+    const generationFailed = ref(false);
     const saveButton: Ref<HTMLButtonElement | null> = ref(null);
     const saving = ref(false);
     const saveFailed = ref(false);
@@ -65,7 +72,8 @@ export default defineComponent({
     });
 
     const handleGenerate = async () => {
-      loading.value = true;
+      generating.value = true;
+      generationFailed.value = false;
       saving.value = false;
       saveFailed.value = false;
       saveComplete.value = false;
@@ -73,9 +81,11 @@ export default defineComponent({
       const generatedQuote = await generateQuote();
       if (generatedQuote) {
         quote.value = generatedQuote;
+      } else {
+        generationFailed.value = true;
       }
 
-      loading.value = false;
+      generating.value = false;
     };
 
     const saveGeneratedQuote = async () => {
@@ -127,7 +137,8 @@ export default defineComponent({
 
     return {
       quote,
-      loading,
+      generating,
+      generationFailed,
       saveButton,
       saving,
       saveFailed,
@@ -162,7 +173,7 @@ export default defineComponent({
   border-radius: 5px;
 }
 
-.no-generated-quote {
+.italic {
   font-style: italic;
 }
 
