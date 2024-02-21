@@ -21,7 +21,7 @@ export const saveQuote = async (quote: Quote): Promise<Quote | null> => {
   const response = await fetch(SERVER_API_URL, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(quote)
   });
@@ -36,4 +36,32 @@ export const saveQuote = async (quote: Quote): Promise<Quote | null> => {
 
   const savedQuote: Quote = await response.json();
   return savedQuote;
+};
+
+export const updateQuote = async (quote: Quote): Promise<boolean> => {
+  const response = await fetch(SERVER_API_URL, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(quote)
+  });
+
+  if (!response.ok) {
+    if (response.status === 400) {
+      // TODO handle bad request
+    }
+
+    return false;
+  }
+
+  return true;
+};
+
+export const saveGeneratedQuote = async (quote: Quote): Promise<Quote | boolean | null> => {
+  if (!quote.id) {
+    return saveQuote(quote);
+  } else {
+    return updateQuote(quote);
+  }
 };
