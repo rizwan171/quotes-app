@@ -23,7 +23,7 @@
         :class="{ 'save-failed': saveFailed, 'save-complete': saveComplete }"
         :disabled="saveComplete"
         v-if="quote.quoteText && !generating"
-        @click="saveGeneratedQuote"
+        @click="save"
       >
         <font-awesome-icon icon="floppy-disk" size="lg" v-if="showSaveIcon" />
         <font-awesome-icon class="fa-spin" icon="circle-notch" size="lg" v-if="saving" />
@@ -37,7 +37,7 @@
 <script lang="ts">
 import { CreationType } from "@/enums/CreationType";
 import { generateQuote } from "@/services";
-import { saveQuote } from "@/services/modules/QuoteService";
+import { saveGeneratedQuote, saveQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
 import { notify } from "@kyvg/vue3-notification";
 import { computed, defineComponent, ref, type Ref } from "vue";
@@ -88,20 +88,23 @@ export default defineComponent({
       generating.value = false;
     };
 
-    const saveGeneratedQuote = async () => {
+    const save = async () => {
       saving.value = true;
 
       const quoteToSave = { ...quote.value, creationType: CreationType.SAVED };
-      try {
-        const savedQuote = await saveQuote(quoteToSave);
 
-        if (savedQuote === null) {
+      try {
+        const savedQuote = await saveGeneratedQuote(quoteToSave);
+
+        if (savedQuote === null || savedQuote == false) {
           saveFailed.value = true;
           notify({ text: "Saving failed.", type: "warn" });
         } else {
           saveFailed.value = false;
           saveComplete.value = true;
-          quote.value = savedQuote;
+          if (typeof savedQuote === "object") {
+            quote.value = savedQuote;
+          }
           notify({ text: "Quote saved successfully.", type: "success" });
         }
       } catch (error) {
@@ -148,7 +151,7 @@ export default defineComponent({
       showSaveFailedIcon,
       showSaveCompleteIcon,
       handleGenerate,
-      saveGeneratedQuote,
+      save,
       handleMouseEnter,
       handleMouseLeave
     };
