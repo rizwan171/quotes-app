@@ -1,9 +1,7 @@
 <template>
   <div class="generate-quote-container">
     <div class="generated-quote-info">
-      <span class="italic" v-if="!quote.quoteText && !generating && !generationFailed"
-        >Click the button below to get a quote...</span
-      >
+      <span class="italic" v-if="showGeneratePrompt">Click the button below to get a quote...</span>
       <span class="italic" v-if="generating">Generating quote...</span>
       <span v-if="!generating && generationFailed"
         >There was a problem generating a quote. If this issue persists, please try again later.</span
@@ -44,13 +42,12 @@ import { computed, defineComponent, ref, type Ref } from "vue";
 
 export default defineComponent({
   setup() {
-    let quote = ref<Quote>({
+    const quote = ref<Quote>({
       quoteText: "",
       author: "",
       origin: "",
       creationType: CreationType.GENERATED
     });
-
     const generating = ref(false);
     const generationFailed = ref(false);
     const saveButton: Ref<HTMLButtonElement | null> = ref(null);
@@ -58,6 +55,10 @@ export default defineComponent({
     const saveFailed = ref(false);
     const saveComplete = ref(false);
     const saveFailedIcon = ref("triangle-exclamation");
+
+    const showGeneratePrompt = computed(() => {
+      return !quote.value.quoteText && !generating.value && !generationFailed.value;
+    });
 
     const showSaveIcon = computed(() => {
       return !saveFailed.value && !saving.value && !saveComplete.value;
@@ -147,6 +148,7 @@ export default defineComponent({
       saveFailed,
       saveFailedIcon,
       saveComplete,
+      showGeneratePrompt,
       showSaveIcon,
       showSaveFailedIcon,
       showSaveCompleteIcon,
