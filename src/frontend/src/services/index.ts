@@ -1,1 +1,1 @@
-export * from "./modules/QuoteGenerationServices";
+export * from "./modules/QuoteGenerationService";

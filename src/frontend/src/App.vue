@@ -5,6 +5,7 @@
     </header>
 
     <main>
+      <notifications position="bottom right" />
       <generated-quote />
     </main>
 

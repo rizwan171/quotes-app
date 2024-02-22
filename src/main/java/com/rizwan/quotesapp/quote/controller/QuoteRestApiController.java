@@ -13,36 +13,50 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/quotes")
 public class QuoteRestApiController {
 
   @Autowired
   private final QuoteService quoteService;
 
-  @Autowired
   public QuoteRestApiController(QuoteService quoteService) {
     this.quoteService = quoteService;
   }
 
   @JsonView(Views.Get.class)
   @GetMapping
-  public ResponseEntity<List<QuoteJson>> getAllQuotes() {
-    return ResponseEntity.ok().body(quoteService.getAllQuotesJson());
+  public ResponseEntity<List<QuoteJson>> getAllUserSavedQuotes() {
+    return ResponseEntity.ok().body(quoteService.getAllUserSavedQuotesJson());
   }
 
-  @JsonView(Views.Post.class)
   @PostMapping
-  public ResponseEntity<?> saveQuote(@RequestBody QuoteJson quoteJson,
-                                     HttpServletRequest request) {
+  public ResponseEntity<?> saveQuote(@JsonView(Views.Post.class) @RequestBody QuoteJson quoteJson, HttpServletRequest request) {
     var validationErrors = quoteService.validateQuote(quoteJson);
     if (!validationErrors.isEmpty()) {
       return ResponseEntity.badRequest().body(validationErrors);
     }
 
-    var savedQuote = quoteService.saveQuote(quoteJson);
-    var location = URI.create(request.getRequestURL().append("/").append(savedQuote.getId()).toString());
+    var savedQuoteJson = quoteService.saveQuote(quoteJson);
+    var location = URI.create(request.getRequestURL().append("/").append(savedQuoteJson.id()).toString());
 
-    return ResponseEntity.created(location).build();
+    return ResponseEntity.created(location).body(savedQuoteJson);
+  }
+
+  @PatchMapping
+  public ResponseEntity<?> updateQuote(@JsonView(Views.Patch.class) @RequestBody QuoteJson quoteJson) {
+    if (!quoteService.doesQuoteExist(quoteJson)) {
+      return ResponseEntity.notFound().build();
+    }
+
+    var validationErrors = quoteService.validateQuote(quoteJson);
+    if (!validationErrors.isEmpty()) {
+      return ResponseEntity.badRequest().body(validationErrors);
+    }
+
+    quoteService.updateQuote(quoteJson);
+
+    return ResponseEntity.ok().build();
   }
 
 }

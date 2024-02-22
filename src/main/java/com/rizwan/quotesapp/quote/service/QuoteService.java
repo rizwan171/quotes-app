@@ -1,6 +1,7 @@
 package com.rizwan.quotesapp.quote.service;
 
 import com.rizwan.quotesapp.quote.model.Quote;
+import com.rizwan.quotesapp.quote.model.enumeration.CreationType;
 import com.rizwan.quotesapp.quote.model.json.QuoteJson;
 import com.rizwan.quotesapp.quote.repository.QuoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +19,26 @@ public class QuoteService {
   @Autowired
   private final QuoteRepository quoteRepository;
 
-  @Autowired
   public QuoteService(QuoteRepository quoteRepository) {
     this.quoteRepository = quoteRepository;
   }
 
-  public List<QuoteJson> getAllQuotesJson() {
+  public List<QuoteJson> getAllUserSavedQuotesJson() {
     return Streamable.of(quoteRepository.findAll()).stream()
-      .map(QuoteJson::fromEntity)
-      .toList();
+        .filter(quote -> quote.getCreationType() != CreationType.GENERATED)
+        .map(QuoteJson::fromEntity)
+        .toList();
   }
 
-  public Quote saveQuote(QuoteJson quoteJson) {
+  public QuoteJson saveQuote(QuoteJson quoteJson) {
     var quote = new Quote()
-      .setId(UUID.randomUUID())
-      .setQuoteText(quoteJson.quoteText())
-      .setAuthor(quoteJson.author())
-      .setOrigin(quoteJson.origin())
-      .setCreationType(quoteJson.creationType());
+        .setId(UUID.randomUUID())
+        .setQuoteText(quoteJson.quoteText())
+        .setAuthor(quoteJson.author())
+        .setOrigin(quoteJson.origin())
+        .setCreationType(quoteJson.creationType());
 
-    return quoteRepository.save(quote);
+    return QuoteJson.fromEntity(quoteRepository.save(quote));
   }
 
   public Map<String, String> validateQuote(QuoteJson quoteJson) {
@@ -52,5 +53,20 @@ public class QuoteService {
     }
 
     return errors;
+  }
+
+  public boolean doesQuoteExist(QuoteJson quoteJson) {
+    return quoteRepository.findById(quoteJson.id()).isPresent();
+  }
+
+  public void updateQuote(QuoteJson quoteJson) {
+    var quote = quoteRepository.findById(quoteJson.id())
+      .orElseThrow(() -> new IllegalArgumentException("No quote for id %s".formatted(quoteJson.id())));
+    quote.setQuoteText(quoteJson.quoteText());
+    quote.setOrigin(quoteJson.origin());
+    quote.setAuthor(quoteJson.author());
+    quote.setCreationType(quoteJson.creationType());
+
+    quoteRepository.save(quote);
   }
 }

@@ -6,4 +6,7 @@ public class Views {
 
   public static class Post {
   }
+
+  public static class Patch {
+  }
 }

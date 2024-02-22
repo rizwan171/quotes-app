@@ -2,10 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/css/index.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
-
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faFloppyDisk, faCircleNotch, faTriangleExclamation, faCheck, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import Notifications from "@kyvg/vue3-notification";
 
-import { faFloppyDisk, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-
-library.add(faFloppyDisk, faCircleNotch);
-createApp(App).component("font-awesome-icon", FontAwesomeIcon).mount("#app");
+library.add(faFloppyDisk, faCircleNotch, faTriangleExclamation, faCheck, faRotateLeft);
+createApp(App).use(Notifications).component("font-awesome-icon", FontAwesomeIcon).mount("#app");
