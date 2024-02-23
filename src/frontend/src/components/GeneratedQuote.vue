@@ -35,7 +35,7 @@
 <script lang="ts">
 import { CreationType } from "@/enums/CreationType";
 import { generateQuote } from "@/services";
-import { saveGeneratedQuote, saveQuote } from "@/services/modules/QuoteService";
+import { saveGeneratedQuote } from "@/services/modules/QuoteService";
 import type { Quote } from "@/types/Quote";
 import { notify } from "@kyvg/vue3-notification";
 import { computed, defineComponent, ref, type Ref } from "vue";

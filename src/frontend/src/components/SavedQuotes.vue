@@ -1,5 +1,10 @@
 <template>
   <div class="saved-quotes-list">
+    <div class="saved-quote" v-for="quote in savedQuotes" :key="quote.id">
+      <!-- TODO handle author and/or origin being empty. set to Unknown maybe -->
+      {{ quote.quoteText }} - {{ quote.author }}
+    </div>
+    <!-- TODO save these -->
     <div class="saved-quote">
       "Nobody is trying to fix the root problems we have in this country. Everyone is trying to make enough money so
       that the problems don't apply to them anymore" - Jack London
@@ -12,9 +17,32 @@
 </template>
 
 <script lang="ts">
+import { getAllUserSavedQuotes } from "@/services/modules/QuoteService";
+import type { Quote } from "@/types/Quote";
+import { notify } from "@kyvg/vue3-notification";
+import { onMounted, ref } from "vue";
+
 export default {
   setup() {
-    return {};
+    const savedQuotes = ref<Quote[]>([]);
+
+    onMounted(async () => {
+      try {
+        const userSavedQuotes = await getAllUserSavedQuotes();
+        if (userSavedQuotes == null) {
+          notify({ text: "There was a problem loading saved quotes.", type: "warn" });
+        } else {
+          // for
+          savedQuotes.value = [...userSavedQuotes];
+        }
+      } catch (error) {
+        notify({ text: "There was a problem loading saved quotes.", type: "warn" });
+      }
+    });
+
+    return {
+      savedQuotes
+    };
   }
 };
 </script>
