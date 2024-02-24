@@ -1,7 +1,6 @@
 <template>
   <div class="saved-quotes-list">
     <div class="saved-quote" v-for="quote in savedQuotes" :key="quote.id">
-      <!-- TODO handle author and/or origin being empty. set to Unknown maybe -->
       {{ quote.quoteText }} - {{ quote.author }}
     </div>
     <!-- TODO save these -->
@@ -32,8 +31,13 @@ export default {
         if (userSavedQuotes == null) {
           notify({ text: "There was a problem loading saved quotes.", type: "warn" });
         } else {
-          // for
-          savedQuotes.value = [...userSavedQuotes];
+          savedQuotes.value = userSavedQuotes.map((quote) => {
+            return {
+              ...quote,
+              author: quote.author ? quote.author : "Unknown",
+              origin: quote.origin ? quote.origin : "Unknown"
+            };
+          });
         }
       } catch (error) {
         notify({ text: "There was a problem loading saved quotes.", type: "warn" });
