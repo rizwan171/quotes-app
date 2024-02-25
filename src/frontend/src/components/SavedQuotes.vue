@@ -1,16 +1,9 @@
 <template>
   <div class="saved-quotes-list">
     <div class="saved-quote" v-for="quote in savedQuotes" :key="quote.id">
-      {{ quote.quoteText }} - {{ quote.author }}
-    </div>
-    <!-- TODO save these -->
-    <div class="saved-quote">
-      "Nobody is trying to fix the root problems we have in this country. Everyone is trying to make enough money so
-      that the problems don't apply to them anymore" - Jack London
-    </div>
-    <div class="saved-quote">"The secret to happiness is freedom, and the secret to freedom is courage" - Unknown</div>
-    <div class="saved-quote">
-      "It may seem difficult at first, but everything seems difficult first" - Miyamoto Musashi
+      <span>{{ quote.quoteText }}</span>
+      <br />
+      <span class="saved-quote-author">- {{ quote.author }}</span>
     </div>
   </div>
 </template>
@@ -67,5 +60,9 @@ export default {
   width: 42rem;
   max-width: 42rem;
   font-weight: 600;
+}
+
+.saved-quote-author {
+  margin-left: 0.5rem;
 }
 </style>
