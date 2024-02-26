@@ -49,6 +49,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 32rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .saved-quote {
