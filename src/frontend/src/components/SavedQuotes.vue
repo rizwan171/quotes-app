@@ -4,6 +4,7 @@
       <span>{{ quote.quoteText }}</span>
       <br />
       <span class="saved-quote-author">- {{ quote.author }}</span>
+      <span class="saved-quote-origin" v-if="quote.author && quote.author !== 'Unknown'">, from {{ quote.origin }}</span>
     </div>
   </div>
 </template>
@@ -68,5 +69,9 @@ export default {
 
 .saved-quote-author {
   margin-left: 0.5rem;
+}
+
+.saved-quote-origin {
+  font-style: italic;
 }
 </style>
